@@ -1,21 +1,21 @@
-// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'features/theme_preview_screen.dart';
 import 'theme/app_theme.dart';
+import 'router/app_router.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       title: 'FoodCards',
+      routerConfig: ref.watch(appRouterProvider),
       theme: lightTheme(),
       darkTheme: darkTheme(),
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: const ThemePreviewScreen(),
     );
   }
 }
