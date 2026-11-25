@@ -31,6 +31,11 @@ class AppStroke {
   static const double modal = 3;
 }
 
+class AppBreakpoint {
+  AppBreakpoint._();
+  static const double tablet = 600;
+}
+
 class AppShadowOffset {
   AppShadowOffset._();
   static const double sm = 3;
@@ -47,6 +52,7 @@ class AppDuration {
   AppDuration._();
   static const Duration fast = Duration(milliseconds: 120);
   static const Duration base = Duration(milliseconds: 200);
+  static const Duration splash = Duration(milliseconds: 300);
   static const Duration slow = Duration(milliseconds: 350);
   static const Duration celebration = Duration(milliseconds: 600);
 }
