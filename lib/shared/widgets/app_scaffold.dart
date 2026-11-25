@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'coin_badge.dart';
 import '../../theme/app_tokens.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -46,7 +47,16 @@ class AppScaffold extends StatelessWidget {
         : AppSpace.md;
 
     return Scaffold(
-      appBar: AppBar(title: Text(title), actions: actions),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          if (coins != null) ...[
+            CoinBadge(coins: coins!),
+            const SizedBox(width: AppSpace.xs),
+          ],
+          ...actions,
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),

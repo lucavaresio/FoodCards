@@ -81,6 +81,12 @@ class PlayerCollectionNotifier
     return success;
   }
 
+  Future<void> purchasePack(int cost, List<String> cardIds) async {
+    final repository = _requireRepository();
+    await repository.purchasePack(cost, cardIds);
+    state = AsyncData(_snapshot(repository));
+  }
+
   Future<void> _load(String uid, CollectionRepository repository) async {
     try {
       await repository.initializeForNewUser();

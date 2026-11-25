@@ -15,8 +15,14 @@ class CollectionRepository {
   bool owns(String cardId) => quantityOf(cardId) > 0;
 
   Future<void> load() async {
-    final coins = _storage.readInt('coins');
-    final ownedJson = _storage.readJson('owned_cards');
+    final state = _storage.readJson('collection_state');
+    final coins = state?['coins'] is int
+        ? state!['coins'] as int
+        : _storage.readInt('coins');
+    final ownedValue = state?['owned'];
+    final ownedJson = ownedValue is Map<String, dynamic>
+        ? ownedValue
+        : _storage.readJson('owned_cards');
 
     if (coins == null || coins < 0) {
       _coins = 0;
@@ -35,12 +41,12 @@ class CollectionRepository {
   }
 
   Future<void> initializeForNewUser() async {
-    if (_storage.readInt('coins') == null &&
+    if (_storage.readJson('collection_state') == null &&
+        _storage.readInt('coins') == null &&
         _storage.readJson('owned_cards') == null) {
       _coins = GameConstants.startingCoins;
       _owned = <String, int>{};
-      await _storage.writeInt('coins', _coins);
-      await _storage.writeJson('owned_cards', <String, dynamic>{});
+      await _persist();
     } else {
       await load();
     }
@@ -78,8 +84,34 @@ class CollectionRepository {
     return true;
   }
 
-  Future<void> _persist() async {
-    await _storage.writeInt('coins', _coins);
-    await _storage.writeJson('owned_cards', Map<String, dynamic>.from(_owned));
+  Future<void> purchasePack(int cost, List<String> cardIds) async {
+    if (cost <= 0) throw ArgumentError.value(cost, 'cost');
+    if (_coins < cost) throw const InsufficientCoins();
+
+    final previousCoins = _coins;
+    final previousOwned = Map<String, int>.from(_owned);
+    _coins -= cost;
+    for (final cardId in cardIds) {
+      _owned[cardId] = (_owned[cardId] ?? 0) + 1;
+    }
+
+    try {
+      await _persist();
+    } catch (_) {
+      _coins = previousCoins;
+      _owned = previousOwned;
+      rethrow;
+    }
   }
+
+  Future<void> _persist() async {
+    await _storage.writeJson('collection_state', {
+      'coins': _coins,
+      'owned': Map<String, dynamic>.from(_owned),
+    });
+  }
+}
+
+class InsufficientCoins implements Exception {
+  const InsufficientCoins();
 }

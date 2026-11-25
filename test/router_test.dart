@@ -60,12 +60,9 @@ void main() {
   testWidgets('sottorotte a schermo intero non mostrano la barra', (
     tester,
   ) async {
-    for (final location in [
-      AppRoutes.packOpening,
-      AppRoutes.match,
-      AppRoutes.settings,
-    ]) {
+    for (final location in [AppRoutes.match, AppRoutes.settings]) {
       await _pumpAppAt(tester, location);
+      await tester.pumpAndSettle();
       expect(find.byType(NavigationBar), findsNothing, reason: location);
     }
   });

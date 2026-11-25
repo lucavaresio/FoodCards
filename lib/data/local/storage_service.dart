@@ -11,10 +11,14 @@ class StorageService {
   String _key(String key) => '$_prefix$key';
 
   int? readInt(String key) => _prefs.getInt(_key(key));
-  Future<void> writeInt(String key, int value) => _prefs.setInt(_key(key), value);
+  Future<void> writeInt(String key, int value) =>
+      _prefs.setInt(_key(key), value);
 
   String? readString(String key) => _prefs.getString(_key(key));
-  Future<void> writeString(String key, String value) => _prefs.setString(_key(key), value);
+  Future<void> writeString(String key, String value) async {
+    final saved = await _prefs.setString(_key(key), value);
+    if (!saved) throw StateError('Impossibile salvare il dato: $key');
+  }
 
   Map<String, dynamic>? readJson(String key) {
     final value = readString(key);
@@ -24,8 +28,8 @@ class StorageService {
       return decoded is Map<String, dynamic>
           ? decoded
           : decoded is Map
-              ? decoded.map((key, value) => MapEntry(key.toString(), value))
-              : null;
+          ? decoded.map((key, value) => MapEntry(key.toString(), value))
+          : null;
     } on FormatException {
       return null;
     } catch (_) {
@@ -57,7 +61,8 @@ class StorageService {
   Future<void> remove(String key) => _prefs.remove(_key(key));
 
   Future<void> clearUserData() async {
-    for (final key in _prefs.getKeys().where((key) => key.startsWith(_prefix)).toList()) {
+    for (final key
+        in _prefs.getKeys().where((key) => key.startsWith(_prefix)).toList()) {
       await _prefs.remove(key);
     }
   }

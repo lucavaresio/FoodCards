@@ -48,6 +48,8 @@ class AppLayout {
   static const double collectionDetailImageWidthFactor = 0.55;
   static const int collectionPhoneColumns = 3;
   static const int collectionTabletColumns = 5;
+  static const int packSummaryPhoneColumns = 3;
+  static const int packSummaryTabletColumns = 5;
 }
 
 class AppShadowOffset {
@@ -69,6 +71,7 @@ class AppDuration {
   static const Duration splash = Duration(milliseconds: 300);
   static const Duration slow = Duration(milliseconds: 350);
   static const Duration celebration = Duration(milliseconds: 600);
+  static const Duration snackbar = Duration(seconds: 3);
 }
 
 class AppThemeExtras extends ThemeExtension<AppThemeExtras> {

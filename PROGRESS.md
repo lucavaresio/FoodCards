@@ -6,12 +6,13 @@
 |---|---|
 | 6 · Autenticazione e sessione | Fatta |
 | 7 · Collezione | Fatta |
-| 8 · Shop e apertura pacchetti | Da fare |
+| 8 · Shop e apertura pacchetti | Fatta |
 | 9 · Crea il tuo deck | Da fare |
 | 10 · Motore di gioco | Da fare |
 | 11 · Gioco: lobby, partita, esito | Da fare |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Da fare |
-| 13 · Rifinitura e preparazione al rilascio | Da fare |
+| 13 · Ricettario TheMealDB | Da fare |
+| 14 · Rifinitura e preparazione al rilascio | Da fare |
 
 ## Fase 6 · Autenticazione e sessione
 
@@ -71,4 +72,30 @@
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
 - Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 8 · Shop e apertura pacchetti
+
+- Stato: fatta; analyzer pulito e tutti i 49 test passano.
+- File creati: `lib/features/shop/shop_controller.dart`,
+  `lib/features/shop/widgets/pack_tile.dart`,
+  `lib/features/shop/widgets/drop_rates_sheet.dart`,
+  `lib/features/shop/widgets/pack_wrapper.dart`,
+  `lib/features/shop/widgets/card_back.dart`,
+  `lib/features/shop/widgets/reveal_stage.dart`,
+  `lib/features/shop/widgets/pack_summary_grid.dart`,
+  `test/pack_service_test.dart`, `test/shop_test.dart`.
+- File modificati: `lib/features/shop/pack_service.dart`,
+  `lib/features/shop/shop_screen.dart`,
+  `lib/features/shop/pack_opening_screen.dart`,
+  `lib/data/repositories/collection_repository.dart`,
+  `lib/data/session_providers.dart`, `lib/data/local/storage_service.dart`,
+  `lib/shared/widgets/app_scaffold.dart`,
+  `lib/shared/widgets/coin_badge.dart`, `lib/theme/app_tokens.dart`,
+  `test/router_test.dart`.
+- Scelte: i tassi vengono normalizzati sul peso totale; l'acquisto persiste
+  saldo e collezione in un singolo record per garantire l'atomicità, leggendo
+  anche il vecchio formato per compatibilità. L'apertura senza risultato torna
+  allo shop; i tocchi ripetuti sono bloccati dal controller.
+- Valori provvisori: drop rates e costi dei pacchetti in `GameConstants`.
 - Da fare a mano: nessuno per questa fase.
