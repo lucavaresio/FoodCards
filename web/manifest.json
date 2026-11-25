@@ -1,11 +1,11 @@
 {
-    "name": "food_cards",
-    "short_name": "food_cards",
+    "name": "FoodCards",
+    "short_name": "FoodCards",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFBF0",
+    "theme_color": "#D83C24",
+    "description": "FoodCards: gioco di carte collezionabili a tema cibo.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

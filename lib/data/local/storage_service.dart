@@ -63,7 +63,10 @@ class StorageService {
   Future<void> clearUserData() async {
     for (final key
         in _prefs.getKeys().where((key) => key.startsWith(_prefix)).toList()) {
-      await _prefs.remove(key);
+      final removed = await _prefs.remove(key);
+      if (!removed && _prefs.containsKey(key)) {
+        throw StateError('Impossibile rimuovere il dato: $key');
+      }
     }
   }
 }

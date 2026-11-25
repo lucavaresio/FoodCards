@@ -29,6 +29,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isSavingProfile = false;
   bool _isSavingTheme = false;
   bool _isSigningOut = false;
+  bool _isDeletingAccount = false;
 
   @override
   void dispose() {
@@ -175,6 +176,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         _isSigningOut ? 'Uscita in corso' : 'Esci dal profilo',
                       ),
                     ),
+                    const SizedBox(height: AppSpace.lg),
+                    Text(
+                      'Privacy e dati',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpace.sm),
+                    StickerCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'Account, email e nome profilo sono gestiti dal '
+                            'servizio di autenticazione configurato. '
+                            'Collezione, mazzi e statistiche sono salvati '
+                            'localmente sul dispositivo. Le ricette sono '
+                            'richieste a TheMealDB.',
+                          ),
+                          const SizedBox(height: AppSpace.md),
+                          TextButton.icon(
+                            onPressed: _isDeletingAccount
+                                ? null
+                                : _deleteAccount,
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppColors.error,
+                            ),
+                            icon: const Icon(Icons.delete_forever_outlined),
+                            label: Text(
+                              _isDeletingAccount
+                                  ? 'Eliminazione in corso'
+                                  : 'Elimina account e dati locali',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -234,6 +270,88 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (mounted) setState(() => _isSigningOut = false);
     }
   }
+
+  Future<void> _deleteAccount() async {
+    final password = await showDialog<String>(
+      context: context,
+      builder: (context) => const _DeleteAccountDialog(),
+    );
+    if (!mounted || password == null) return;
+
+    setState(() {
+      _isDeletingAccount = true;
+      _error = null;
+    });
+    try {
+      await ref.read(authControllerProvider.notifier).deleteAccount(password);
+      if (!mounted) return;
+      context.go(AppRoutes.login);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = authErrorMessage(error));
+    } finally {
+      if (mounted) setState(() => _isDeletingAccount = false);
+    }
+  }
+}
+
+class _DeleteAccountDialog extends StatefulWidget {
+  const _DeleteAccountDialog();
+
+  @override
+  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    icon: const Icon(Icons.delete_forever_outlined, color: AppColors.error),
+    title: const Text('Eliminare l’account?'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'L’operazione è irreversibile. Conferma la password per eliminare '
+          'l’account e i dati locali associati.',
+        ),
+        const SizedBox(height: AppSpace.md),
+        TextField(
+          controller: _passwordController,
+          obscureText: true,
+          autofillHints: const [AutofillHints.password],
+          textInputAction: TextInputAction.done,
+          decoration: const InputDecoration(labelText: 'Password'),
+          onChanged: (_) => setState(() {}),
+          onSubmitted: (value) {
+            if (value.isNotEmpty) Navigator.of(context).pop(value);
+          },
+        ),
+      ],
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Annulla'),
+      ),
+      TextButton.icon(
+        onPressed: _passwordController.text.isEmpty
+            ? null
+            : () => Navigator.of(context).pop(_passwordController.text),
+        style: TextButton.styleFrom(foregroundColor: AppColors.error),
+        icon: const Icon(Icons.delete_forever_outlined),
+        label: const Text('Elimina account'),
+      ),
+    ],
+  );
 }
 
 class _SettingsError extends StatelessWidget {

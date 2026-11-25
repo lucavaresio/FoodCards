@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:food_cards/app.dart';
+import 'package:food_cards/data/local/storage_service.dart';
 import 'package:food_cards/data/providers.dart';
 import 'package:food_cards/data/repositories/fake_auth_repository.dart';
 import 'package:food_cards/data/session_providers.dart';
@@ -39,6 +40,58 @@ void main() {
     await tester.tap(find.text('Scuro').last);
     await tester.pumpAndSettle();
     expect(preferences.getString('theme_mode'), 'dark');
+  });
+
+  testWidgets('le impostazioni supportano il testo al 130%', (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final (auth, preferences) = await _dependencies();
+    addTearDown(auth.dispose);
+
+    await _pumpApp(tester, preferences, auth, AppRoutes.settings);
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(ListView).first, const Offset(0, -900));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('Privacy e dati'), findsOneWidget);
+  });
+
+  testWidgets('eliminare il profilo richiede la password e cancella i dati', (
+    tester,
+  ) async {
+    final (auth, preferences) = await _dependencies();
+    addTearDown(auth.dispose);
+    final storage = StorageService(preferences, uid: auth.currentUser!.uid);
+    await storage.writeString('private_info', 'dato personale');
+    await _pumpApp(tester, preferences, auth, AppRoutes.settings);
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(ListView).first, const Offset(0, -900));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Elimina account e dati locali'));
+    await tester.tap(find.text('Elimina account e dati locali'));
+    await tester.pumpAndSettle();
+    expect(find.text('Eliminare l’account?'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField).last, 'password errata');
+    await tester.pump();
+    await tester.tap(find.text('Elimina account').last);
+    await tester.pumpAndSettle();
+    expect(auth.currentUser, isNotNull);
+    expect(storage.readString('private_info'), 'dato personale');
+    expect(find.text('Email o password non corretti.'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Elimina account e dati locali'));
+    await tester.tap(find.text('Elimina account e dati locali'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'Password123');
+    await tester.pump();
+    await tester.tap(find.text('Elimina account').last);
+    await tester.pumpAndSettle();
+
+    expect(auth.currentUser, isNull);
+    expect(storage.readString('private_info'), isNull);
   });
 }
 

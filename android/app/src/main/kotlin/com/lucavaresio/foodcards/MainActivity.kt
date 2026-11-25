@@ -1,4 +1,4 @@
-package com.example.food_cards
+package com.lucavaresio.foodcards
 
 import io.flutter.embedding.android.FlutterActivity
 

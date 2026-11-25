@@ -12,7 +12,7 @@
 | 11 · Gioco: lobby, partita, esito | Fatta |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Fatta |
 | 13 · Ricettario TheMealDB | Fatta |
-| 14 · Rifinitura e preparazione al rilascio | Da fare |
+| 14 · Rifinitura e preparazione al rilascio | Fatta |
 
 ## Fase 6 · Autenticazione e sessione
 
@@ -45,15 +45,18 @@
 - Valori provvisori: account del fake persi al riavvio; nessuna chiave Firebase
   è inclusa.
 - Da fare a mano: creare/configurare Firebase, abilitare Email/Password,
-  eseguire `flutterfire configure` e sostituire lo stub; cambiare gli
-  identificativi Android/iOS attualmente `com.example...`.
+  eseguire `flutterfire configure` e sostituire lo stub.
 
 ## Da fare a mano
 
 - Configurazione Firebase e provider Email/Password.
-- Identificativi Android/iOS: rimuovere `com.example...` prima del rilascio.
+- Verificare che il bundle ID provvisorio `com.lucavaresio.foodcards` sia
+  quello desiderato e disponibile per la pubblicazione.
 - Eseguire `flutterfire configure` e generare opzioni reali senza committare
   credenziali segrete.
+- Configurare una chiave di firma release privata, icone finali e una privacy
+  policy pubblica prima della distribuzione.
+- Verificare i termini correnti di TheMealDB e l’eventuale chiave commerciale.
 - Per il fake in modo esplicito: `--dart-define=USE_FAKE_AUTH=true`.
 
 ## Fase 7 · Collezione
@@ -198,3 +201,31 @@
   allo shop; i tocchi ripetuti sono bloccati dal controller.
 - Valori provvisori: drop rates e costi dei pacchetti in `GameConstants`.
 - Da fare a mano: nessuno per questa fase.
+
+## Fase 14 · Rifinitura e preparazione al rilascio
+
+- Stato: fatta; analyzer pulito, tutti i 72 test passano, build Android
+  release generata e app avviata in debug su emulatore.
+- File modificati: `README.md`, `PROGRESS.md`, `pubspec.yaml`,
+  `lib/data/local/storage_service.dart`,
+  `lib/features/settings/settings_screen.dart`, `test/home_test.dart`,
+  `android/app/build.gradle.kts`,
+  `android/app/src/main/AndroidManifest.xml`,
+  `android/app/src/main/kotlin/com/lucavaresio/foodcards/MainActivity.kt`,
+  `ios/Runner/Info.plist`, `ios/Runner.xcodeproj/project.pbxproj`,
+  `macos/Runner/Configs/AppInfo.xcconfig`,
+  `macos/Runner.xcodeproj/project.pbxproj`,
+  `macos/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme`,
+  `linux/CMakeLists.txt`, `linux/runner/my_application.cc`,
+  `web/index.html`, `web/manifest.json`, `windows/runner/main.cpp`,
+  `windows/runner/Runner.rc`.
+- Scelte: aggiunta conferma password e cancellazione account/dati locali;
+  la pulizia verifica che le chiavi per UID siano effettivamente rimosse.
+  Aggiornati identità, nomi e orientamento verticale delle piattaforme; il
+  permesso Android Internet è presente anche in release. Aggiunti test di
+  cancellazione e testo ingrandito al 130%.
+- Valori provvisori: identificativo `com.lucavaresio.foodcards`, icone
+  predefinite, configurazione Firebase stub e APK release non firmato
+  (non installabile finché non viene configurata la firma).
+- Da fare a mano: firma Android, progetto Firebase, privacy policy, icone e
+  verifica finale dei termini di TheMealDB prima della pubblicazione.
