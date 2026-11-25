@@ -35,7 +35,8 @@ class CollectionRepository {
   }
 
   Future<void> initializeForNewUser() async {
-    if (_storage.readInt('coins') == null && _storage.readJson('owned_cards') == null) {
+    if (_storage.readInt('coins') == null &&
+        _storage.readJson('owned_cards') == null) {
       _coins = GameConstants.startingCoins;
       _owned = <String, int>{};
       await _storage.writeInt('coins', _coins);
@@ -51,6 +52,11 @@ class CollectionRepository {
       updated[cardId] = (updated[cardId] ?? 0) + 1;
     }
     _owned = updated;
+    await _persist();
+  }
+
+  Future<void> clearOwnedCards() async {
+    _owned = <String, int>{};
     await _persist();
   }
 

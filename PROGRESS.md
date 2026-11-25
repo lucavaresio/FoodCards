@@ -5,7 +5,7 @@
 | Fase | Stato |
 |---|---|
 | 6 · Autenticazione e sessione | Fatta |
-| 7 · Collezione | Da fare |
+| 7 · Collezione | Fatta |
 | 8 · Shop e apertura pacchetti | Da fare |
 | 9 · Crea il tuo deck | Da fare |
 | 10 · Motore di gioco | Da fare |
@@ -54,3 +54,21 @@
 - Eseguire `flutterfire configure` e generare opzioni reali senza committare
   credenziali segrete.
 - Per il fake in modo esplicito: `--dart-define=USE_FAKE_AUTH=true`.
+
+## Fase 7 · Collezione
+
+- Stato: fatta; `flutter analyze` pulito e tutti i test verdi.
+- File creati: `lib/features/collection/widgets/collection_filter_bar.dart`,
+  `lib/features/collection/widgets/card_detail_sheet.dart`,
+  `lib/features/dev/dev_tools_sheet.dart`, `test/collection_test.dart`.
+- File modificati: `lib/features/collection/collection_controller.dart`,
+  `lib/features/collection/collection_screen.dart`,
+  `lib/shared/widgets/food_card_widget.dart`,
+  `lib/shared/widgets/rarity_chip.dart`,
+  `lib/data/repositories/collection_repository.dart`,
+  `lib/data/session_providers.dart`, `lib/theme/app_tokens.dart`.
+- Scelte: la ricerca accent-insensitive considera solo carte possedute; il
+  contatore conta carte uniche e il reset degli strumenti debug rimuove le
+  carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
+- Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.

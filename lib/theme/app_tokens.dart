@@ -44,6 +44,10 @@ class AppTapTarget {
 class AppLayout {
   AppLayout._();
   static const double authFormMaxWidth = 480;
+  static const double collectionCardAspectRatio = 0.70;
+  static const double collectionDetailImageWidthFactor = 0.55;
+  static const int collectionPhoneColumns = 3;
+  static const int collectionTabletColumns = 5;
 }
 
 class AppShadowOffset {

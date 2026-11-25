@@ -68,6 +68,12 @@ class PlayerCollectionNotifier
     state = AsyncData(_snapshot(repository));
   }
 
+  Future<void> clearOwnedCards() async {
+    final repository = _requireRepository();
+    await repository.clearOwnedCards();
+    state = AsyncData(_snapshot(repository));
+  }
+
   Future<bool> spendCoins(int amount) async {
     final repository = _requireRepository();
     final success = await repository.spendCoins(amount);
