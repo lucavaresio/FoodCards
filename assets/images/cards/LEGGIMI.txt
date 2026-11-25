@@ -1,0 +1,23 @@
+CARTE UNIFORMATE - 100 immagini WebP
+
+- Tutti i file sono 1200 x 1200 pixel.
+- Formato WebP, qualità 96: dimensioni molto più contenute rispetto a PNG, adatto alle app Flutter moderne.
+- L'immagine originale è mantenuta interamente visibile e proporzionata: nessun ritaglio e nessuna deformazione.
+- Lo spazio residuo è riempito con uno sfondo sfocato derivato dalla stessa carta.
+- Le immagini sono state ingrandite con ricampionamento Lanczos e una leggera nitidezza.
+
+NOTA QUALITÀ
+Gli originali erano molto piccoli (circa 90-122 pixel per lato). L'upscaling uniforma le dimensioni e rende i file più adatti alla visualizzazione, ma non può ricreare i dettagli mancanti. Per una qualità davvero nitida su ogni smartphone, la soluzione migliore è esportare o generare le carte originali direttamente ad alta risoluzione.
+
+ESEMPIO FLUTTER
+SizedBox(
+  width: 220,
+  height: 220,
+  child: Image.asset(
+    'assets/cards/carciofo.webp',
+    fit: BoxFit.contain,
+    filterQuality: FilterQuality.high,
+  ),
+)
+
+Usa lo stesso riquadro per tutte le carte. Se il layout deve essere verticale, imposta un aspectRatio unico (ad esempio 3 / 4) e mantieni BoxFit.contain per non tagliare le immagini.

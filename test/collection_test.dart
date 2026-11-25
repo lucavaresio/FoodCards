@@ -6,6 +6,8 @@ import 'package:food_cards/data/models/rarity.dart';
 import 'package:food_cards/data/repositories/card_repository.dart';
 import 'package:food_cards/features/collection/collection_controller.dart';
 import 'package:food_cards/features/collection/widgets/card_detail_sheet.dart';
+import 'package:food_cards/features/collection/widgets/collection_filter_bar.dart';
+import 'package:food_cards/theme/app_theme.dart';
 
 void main() {
   final cards = [
@@ -60,6 +62,46 @@ void main() {
     expect(find.text('???'), findsOneWidget);
     expect(find.text(card.name), findsNothing);
     expect(find.text('Non ancora trovata'), findsOneWidget);
+  });
+
+  testWidgets('i filtri si espandono senza tagliare i chip su mobile', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 844);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+    final searchController = TextEditingController();
+    addTearDown(searchController.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: lightTheme(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: CollectionFilterBar(
+              searchController: searchController,
+              state: const CollectionFilterState(),
+              sets: const [
+                'Dolci',
+                'Ortaggi',
+                'Frutta',
+                'Piccante',
+                'Fast food',
+              ],
+              onChanged: (_) {},
+              onReset: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Elemento'), findsNothing);
+    await tester.tap(find.text('Filtri e ordinamento'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Elemento'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
 

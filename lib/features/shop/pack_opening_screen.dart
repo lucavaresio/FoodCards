@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/session_providers.dart';
-import '../../data/models/food_card.dart';
 import '../../data/repositories/collection_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../router/app_routes.dart';
@@ -23,7 +22,7 @@ class PackOpeningScreen extends ConsumerStatefulWidget {
 
 class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
   int _index = 0;
-  bool _revealed = false;
+  bool _packOpened = false;
   bool _summary = false;
   bool _tearing = false;
 
@@ -75,12 +74,12 @@ class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
       children: [
         Expanded(
           child: Center(
-            child: _revealed
+            child: _packOpened
                 ? RevealStage(
                     card: card,
                     revealed: true,
                     isNew: result.newCardIds.contains(card.id),
-                    onTap: () => _onReveal(card),
+                    onTap: _advance,
                   )
                 : Stack(
                     alignment: Alignment.center,
@@ -108,9 +107,13 @@ class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
         ),
         Text('Carta ${_index + 1} di ${result.cards.length}'),
         const SizedBox(height: AppSpace.sm),
-        TextButton(
-          onPressed: () => setState(() => _summary = true),
-          child: const Text('SALTA'),
+        Text(
+          !_packOpened
+              ? 'Tocca il pacco per aprirlo'
+              : _index + 1 == result.cards.length
+              ? 'Tocca la carta per vedere il riepilogo'
+              : 'Tocca la carta per continuare',
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
@@ -155,7 +158,6 @@ class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
         _summary = true;
       } else {
         _index++;
-        _revealed = false;
       }
     });
   }
@@ -169,13 +171,8 @@ class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
     if (!mounted) return;
     setState(() {
       _tearing = false;
-      _revealed = true;
+      _packOpened = true;
     });
-  }
-
-  void _onReveal(FoodCard card) {
-    if (card.id.isEmpty) return;
-    _advance();
   }
 
   Future<void> _buyAgain() async {
@@ -186,7 +183,7 @@ class _PackOpeningScreenState extends ConsumerState<PackOpeningScreen> {
       if (!mounted) return;
       setState(() {
         _index = 0;
-        _revealed = false;
+        _packOpened = false;
         _summary = false;
       });
     } on InsufficientCoins {

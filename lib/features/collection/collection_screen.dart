@@ -8,11 +8,11 @@ import '../../data/providers.dart';
 import '../../data/session_providers.dart';
 import '../../router/app_routes.dart';
 import '../../shared/widgets/app_scaffold.dart';
-import '../../shared/widgets/food_card_widget.dart';
 import '../../shared/widgets/sticker_button.dart';
 import '../../theme/app_tokens.dart';
 import 'collection_controller.dart';
 import 'widgets/card_detail_sheet.dart';
+import 'widgets/collection_card_grid.dart';
 import 'widgets/collection_filter_bar.dart';
 import '../dev/dev_tools_sheet.dart';
 
@@ -131,15 +131,23 @@ class _CollectionScreenState extends ConsumerState<CollectionScreen> {
                 ),
                 const SizedBox(height: AppSpace.xs),
                 LinearProgressIndicator(value: owned / cards.length),
-                for (final entry in setCounts.entries)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpace.xxs),
-                    child: Text(
-                      '${entry.key}: ${entry.value.$1}/${entry.value.$2}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                const SizedBox(height: AppSpace.md),
+                const SizedBox(height: AppSpace.xs),
+                Wrap(
+                  spacing: AppSpace.sm,
+                  runSpacing: AppSpace.xxs,
+                  children: [
+                    for (final entry in setCounts.entries)
+                      Semantics(
+                        label:
+                            '${entry.key}: ${entry.value.$1} carte su ${entry.value.$2}',
+                        child: Text(
+                          '${entry.key}: ${entry.value.$1}/${entry.value.$2}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: AppSpace.xs),
                 CollectionFilterBar(
                   searchController: _searchController,
                   state: _controller.state,
@@ -162,31 +170,17 @@ class _CollectionScreenState extends ConsumerState<CollectionScreen> {
         else
           SliverPadding(
             padding: const EdgeInsets.only(bottom: AppSpace.lg),
-            sliver: SliverGrid.builder(
-              itemCount: filtered.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount:
-                    MediaQuery.sizeOf(context).width >= AppBreakpoint.tablet
-                    ? AppLayout.collectionTabletColumns
-                    : AppLayout.collectionPhoneColumns,
-                childAspectRatio: AppLayout.collectionCardAspectRatio,
-                crossAxisSpacing: AppSpace.xs,
-                mainAxisSpacing: AppSpace.xs,
-              ),
-              itemBuilder: (context, index) {
-                final card = filtered[index];
+            sliver: CollectionCardGrid(
+              cards: filtered,
+              quantities: player.owned,
+              onCardTap: (card) {
                 final quantity = player.quantityOf(card.id);
-                return FoodCardWidget(
-                  card: card,
-                  owned: quantity > 0,
-                  quantity: quantity,
-                  onTap: () => showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    showDragHandle: true,
-                    builder: (_) =>
-                        CardDetailSheet(card: card, quantity: quantity),
-                  ),
+                showModalBottomSheet<void>(
+                  context: context,
+                  isScrollControlled: true,
+                  showDragHandle: true,
+                  builder: (_) =>
+                      CardDetailSheet(card: card, quantity: quantity),
                 );
               },
             ),

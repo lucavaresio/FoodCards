@@ -74,7 +74,7 @@ class GameConstants {
         Rarity.epic: 15,
         Rarity.legendary: 5,
       },
-      image: 'chefs_selection.png',
+      image: 'chef_selection_pack.png',
     ),
     CardPack(
       id: 'legendary',
