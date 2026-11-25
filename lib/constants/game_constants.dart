@@ -10,6 +10,8 @@ class GameConstants {
   // TODO: bilanciare
   static const int startingCoins = 500;
   static const int maxDeckNameLength = 20;
+  // TODO: bilanciare
+  static const int maxDecks = 10;
 
   static const List<CardPack> packs = <CardPack>[
     CardPack(

@@ -7,7 +7,7 @@
 | 6 · Autenticazione e sessione | Fatta |
 | 7 · Collezione | Fatta |
 | 8 · Shop e apertura pacchetti | Fatta |
-| 9 · Crea il tuo deck | Da fare |
+| 9 · Crea il tuo deck | Fatta |
 | 10 · Motore di gioco | Da fare |
 | 11 · Gioco: lobby, partita, esito | Da fare |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Da fare |
@@ -71,6 +71,27 @@
 - Scelte: la ricerca accent-insensitive considera solo carte possedute; il
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
+- Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 9 · Crea il tuo deck
+
+- Stato: fatta; `flutter analyze` pulito e tutti i 53 test passano.
+- File creati: `lib/features/deck_builder/deck_edit_screen.dart`,
+  `lib/features/deck_builder/widgets/available_cards_list.dart`,
+  `lib/features/deck_builder/widgets/dashed_border.dart`,
+  `lib/features/deck_builder/widgets/deck_list_tile.dart`,
+  `lib/features/deck_builder/widgets/deck_slot.dart`, `test/deck_test.dart`.
+- File modificati: `lib/constants/game_constants.dart`,
+  `lib/data/repositories/deck_repository.dart`,
+  `lib/features/deck_builder/deck_builder_screen.dart`,
+  `lib/features/deck_builder/deck_controller.dart`,
+  `lib/router/app_router.dart`, `test/data_layer_test.dart`,
+  `test/router_test.dart`.
+- Scelte: i deck hanno al massimo 10 carte e 10 deck per giocatore; nomi
+  univoci senza differenze di maiuscole o spazi esterni. Soltanto deck completi
+  possono essere attivati; se il deck attivo diventa incompleto viene
+  disattivato. La bozza è mantenuta nell'editor e salvata esplicitamente.
 - Valori provvisori: nessuno aggiunto in questa fase.
 - Da fare a mano: nessuno per questa fase.
 

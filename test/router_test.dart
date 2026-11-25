@@ -49,7 +49,7 @@ void main() {
 
     for (var index = 0; index < labels.length; index++) {
       await tester.tap(find.text(labels[index]).last);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 400));
       expect(
         tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
         index,

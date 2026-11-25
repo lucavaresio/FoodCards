@@ -34,7 +34,9 @@ void main() {
     late List<dynamic> cards;
 
     setUp(() {
-      cards = jsonDecode(File('assets/cards.json').readAsStringSync()) as List<dynamic>;
+      cards = jsonDecode(
+        File('assets/cards.json').readAsStringSync(),
+      ) as List<dynamic>;
     });
 
     test('100 carte, set e rarità', () {
@@ -52,7 +54,10 @@ void main() {
           'epic': 3,
           'legendary': 1,
         }.entries) {
-          expect(setCards.where((item) => item['rarity'] == entry.key).length, entry.value);
+          expect(
+            setCards.where((item) => item['rarity'] == entry.key).length,
+            entry.value,
+          );
         }
       }
 
@@ -63,18 +68,46 @@ void main() {
         'epic': 15,
         'legendary': 5,
       }.entries) {
-        expect(cards.where((item) => item['rarity'] == entry.key).length, entry.value);
+        expect(
+          cards.where((item) => item['rarity'] == entry.key).length,
+          entry.value,
+        );
       }
     });
 
     test('immagini, testi e fasce statistiche', () {
       final usedImages = <String>{};
       final ranges = {
-        'common': {'health': [3, 4], 'attack': [1, 3], 'defense': [0, 1], 'speed': [1, 3]},
-        'uncommon': {'health': [4, 5], 'attack': [2, 4], 'defense': [1, 2], 'speed': [2, 4]},
-        'rare': {'health': [5, 6], 'attack': [3, 5], 'defense': [2, 3], 'speed': [3, 5]},
-        'epic': {'health': [6, 8], 'attack': [4, 6], 'defense': [3, 4], 'speed': [4, 6]},
-        'legendary': {'health': [8, 10], 'attack': [6, 8], 'defense': [4, 5], 'speed': [5, 7]},
+        'common': {
+          'health': [3, 4],
+          'attack': [1, 3],
+          'defense': [0, 1],
+          'speed': [1, 3],
+        },
+        'uncommon': {
+          'health': [4, 5],
+          'attack': [2, 4],
+          'defense': [1, 2],
+          'speed': [2, 4],
+        },
+        'rare': {
+          'health': [5, 6],
+          'attack': [3, 5],
+          'defense': [2, 3],
+          'speed': [3, 5],
+        },
+        'epic': {
+          'health': [6, 8],
+          'attack': [4, 6],
+          'defense': [3, 4],
+          'speed': [4, 6],
+        },
+        'legendary': {
+          'health': [8, 10],
+          'attack': [6, 8],
+          'defense': [4, 5],
+          'speed': [5, 7],
+        },
       };
 
       for (final item in cards) {
@@ -82,12 +115,20 @@ void main() {
         for (final stat in ['health', 'attack', 'defense', 'speed']) {
           final value = item[stat] as int;
           final limits = ranges[rarity]![stat]!;
-          expect(value >= limits[0] && value <= limits[1], isTrue, reason: '${item['id']} $stat');
+          expect(
+            value >= limits[0] && value <= limits[1],
+            isTrue,
+            reason: '${item['id']} $stat',
+          );
         }
 
         final image = item['image'] as String;
         usedImages.add(image);
-        expect(File('assets/images/cards/$image').existsSync(), isTrue, reason: image);
+        expect(
+          File('assets/images/cards/$image').existsSync(),
+          isTrue,
+          reason: image,
+        );
         expect((item['abilityName'] as String).isNotEmpty, isTrue);
         expect((item['abilityName'] as String).length <= 20, isTrue);
         expect((item['description'] as String).isNotEmpty, isTrue);
@@ -137,7 +178,9 @@ void main() {
 
     test('inizializza una sola volta e gestisce carte e monete', () async {
       final prefs = await SharedPreferences.getInstance();
-      final collection = CollectionRepository(StorageService(prefs, uid: 'user-a'));
+      final collection = CollectionRepository(
+        StorageService(prefs, uid: 'user-a'),
+      );
 
       await collection.initializeForNewUser();
       expect(collection.coins, GameConstants.startingCoins);
@@ -155,7 +198,9 @@ void main() {
       expect(() => collection.spendCoins(0), throwsA(isA<ArgumentError>()));
       expect(() => collection.spendCoins(-10), throwsA(isA<ArgumentError>()));
 
-      final recreated = CollectionRepository(StorageService(prefs, uid: 'user-a'));
+      final recreated = CollectionRepository(
+        StorageService(prefs, uid: 'user-a'),
+      );
       await recreated.load();
       expect(recreated.coins, collection.coins);
       expect(recreated.owned, collection.owned);
@@ -184,12 +229,16 @@ void main() {
       final repository = DeckRepository(StorageService(prefs, uid: 'decks'));
       await repository.load();
 
-      await repository.save(Deck(id: 'd1', name: 'Primo', cardIds: const ['a']));
+      final cards = List.generate(
+        GameConstants.deckSize,
+        (index) => 'card-$index',
+      );
+      await repository.save(Deck(id: 'd1', name: 'Primo', cardIds: cards));
       await repository.setActiveDeck('d1');
       expect(repository.byId('d1')?.name, 'Primo');
       expect(repository.activeDeckId, 'd1');
 
-      await repository.save(Deck(id: 'd1', name: 'Aggiornato', cardIds: const ['a', 'b']));
+      await repository.save(Deck(id: 'd1', name: 'Aggiornato', cardIds: cards));
       expect(repository.byId('d1')?.name, 'Aggiornato');
 
       await repository.delete('d1');
@@ -206,9 +255,18 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final repository = DeckRepository(StorageService(prefs, uid: 'names'));
 
-      expect(() => repository.save(Deck(id: 'empty', name: ' ', cardIds: const [])), throwsA(isA<ArgumentError>()));
       expect(
-        () => repository.save(Deck(id: 'long', name: 'x' * (GameConstants.maxDeckNameLength + 1), cardIds: const [])),
+        () => repository.save(Deck(id: 'empty', name: ' ', cardIds: const [])),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => repository.save(
+          Deck(
+            id: 'long',
+            name: 'x' * (GameConstants.maxDeckNameLength + 1),
+            cardIds: const [],
+          ),
+        ),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -226,7 +284,8 @@ void main() {
     });
 
     test('rileva ID duplicati nel bundle fittizio', () async {
-      const duplicate = '[{"id":"x","name":"X","rarity":"common","element":"acqua","health":3,"attack":1,"defense":0,"speed":1,"abilityName":"Prova","description":"Carta di prova.","cardSet":"Frutta","image":"x.png"},{"id":"x","name":"X2","rarity":"rare","element":"acqua","health":5,"attack":3,"defense":2,"speed":3,"abilityName":"Prova2","description":"Seconda carta.","cardSet":"Frutta","image":"x.png"}]';
+      const duplicate =
+          '[{"id":"x","name":"X","rarity":"common","element":"acqua","health":3,"attack":1,"defense":0,"speed":1,"abilityName":"Prova","description":"Carta di prova.","cardSet":"Frutta","image":"x.png"},{"id":"x","name":"X2","rarity":"rare","element":"acqua","health":5,"attack":3,"defense":2,"speed":3,"abilityName":"Prova2","description":"Seconda carta.","cardSet":"Frutta","image":"x.png"}]';
       final repository = CardRepository(bundle: _TestBundle(duplicate));
       await expectLater(repository.load(), throwsA(isA<FormatException>()));
     });

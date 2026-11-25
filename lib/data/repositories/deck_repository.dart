@@ -38,19 +38,43 @@ class DeckRepository {
     _decks = loaded;
 
     final active = _storage.readString('active_deck_id');
-    _activeDeckId = active != null && byId(active) != null ? active : null;
+    final activeDeck = active == null ? null : byId(active);
+    _activeDeckId = activeDeck?.isComplete == true ? active : null;
+    if (active != null && _activeDeckId == null) {
+      await _storage.remove('active_deck_id');
+    }
   }
 
   Future<void> save(Deck deck) async {
-    if (deck.name.trim().isEmpty || deck.name.length > GameConstants.maxDeckNameLength) {
-      throw ArgumentError('Nome deck obbligatorio, massimo ${GameConstants.maxDeckNameLength} caratteri');
+    final name = deck.name.trim();
+    if (name.isEmpty || name.length > GameConstants.maxDeckNameLength) {
+      throw ArgumentError(
+        'Nome deck obbligatorio, massimo ${GameConstants.maxDeckNameLength} caratteri',
+      );
     }
 
     final index = _decks.indexWhere((item) => item.id == deck.id);
+    if (index < 0 && _decks.length >= GameConstants.maxDecks) {
+      throw StateError('Hai raggiunto il limite di mazzi');
+    }
+    final normalizedName = _normalizeName(name);
+    if (_decks.any(
+      (item) =>
+          item.id != deck.id && _normalizeName(item.name) == normalizedName,
+    )) {
+      throw ArgumentError('Nome deck già utilizzato');
+    }
+    if (deck.cardIds.length > GameConstants.deckSize) {
+      throw ArgumentError('Il deck supera ${GameConstants.deckSize} carte');
+    }
+    final normalizedDeck = deck.copyWith(name: name);
     if (index >= 0) {
-      _decks[index] = deck;
+      _decks[index] = normalizedDeck;
     } else {
-      _decks = <Deck>[..._decks, deck];
+      _decks = <Deck>[..._decks, normalizedDeck];
+    }
+    if (_activeDeckId == deck.id && !normalizedDeck.isComplete) {
+      _activeDeckId = null;
     }
     await _persist();
   }
@@ -62,9 +86,12 @@ class DeckRepository {
   }
 
   Future<void> setActiveDeck(String? id) async {
-    if (id != null && byId(id) == null) {
-      throw ArgumentError('Deck inesistente: $id');
+    if (id != null) {
+      final deck = byId(id);
+      if (deck == null) throw ArgumentError('Deck inesistente: $id');
+      if (!deck.isComplete) throw ArgumentError('Il deck non è completo');
     }
+
     _activeDeckId = id;
     if (id == null) {
       await _storage.remove('active_deck_id');
@@ -85,3 +112,6 @@ class DeckRepository {
     }
   }
 }
+
+String _normalizeName(String name) =>
+    name.trim().toLowerCase().replaceAll(RegExp(r'\s+'), '');

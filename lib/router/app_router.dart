@@ -9,6 +9,7 @@ import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
 import '../features/collection/collection_screen.dart';
 import '../features/deck_builder/deck_builder_screen.dart';
+import '../features/deck_builder/deck_edit_screen.dart';
 import '../features/game/game_screen.dart';
 import '../features/game/match_screen.dart';
 import '../features/gallery/gallery_screen.dart';
@@ -106,7 +107,9 @@ GoRouter createAppRouter({
                     path: AppRoutes.deckEditSegment,
                     pageBuilder: (context, state) => NoTransitionPage<void>(
                       key: state.pageKey,
-                      child: const DeckBuilderScreen(isEditing: true),
+                      child: DeckEditScreen(
+                        deckId: state.pathParameters['deckId']!,
+                      ),
                     ),
                   ),
                 ],
