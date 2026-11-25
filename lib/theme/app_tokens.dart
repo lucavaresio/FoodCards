@@ -36,6 +36,16 @@ class AppBreakpoint {
   static const double tablet = 600;
 }
 
+class AppTapTarget {
+  AppTapTarget._();
+  static const double minimum = 48;
+}
+
+class AppLayout {
+  AppLayout._();
+  static const double authFormMaxWidth = 480;
+}
+
 class AppShadowOffset {
   AppShadowOffset._();
   static const double sm = 3;

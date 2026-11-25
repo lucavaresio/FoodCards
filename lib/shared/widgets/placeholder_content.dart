@@ -12,17 +12,20 @@ class TabPlaceholderScreen extends StatelessWidget {
   const TabPlaceholderScreen({
     required this.title,
     required this.currentIndex,
+    this.actions = const [],
     super.key,
   });
 
   final String title;
   final int currentIndex;
+  final List<Widget> actions;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       title: title,
       currentIndex: currentIndex,
+      actions: actions,
       onDestinationSelected: (index) => context.go(AppRoutes.tabAt(index)),
       body: _PlaceholderCard(title: title),
     );

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:food_cards/app.dart';
+import 'package:food_cards/data/providers.dart';
+import 'package:food_cards/data/repositories/fake_auth_repository.dart';
+import 'package:food_cards/data/session_providers.dart';
 import 'package:food_cards/router/app_router.dart';
 import 'package:food_cards/router/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('ogni rotta viene costruita', (tester) async {
@@ -29,14 +33,12 @@ void main() {
     }
   });
 
-  testWidgets('splash passa alla home dopo 300 ms', (tester) async {
+  testWidgets('splash mostra logo e stato di verifica sessione', (
+    tester,
+  ) async {
     await _pumpAppAt(tester, AppRoutes.splash);
-    expect(find.text('FoodCards'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 299));
-    expect(find.text('FoodCards'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 1));
-    await tester.pump();
-    expect(find.text('In arrivo'), findsOneWidget);
+    expect(find.bySemanticsLabel('Logo FoodCards'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
   testWidgets('le cinque destinazioni aggiornano la scheda selezionata', (
@@ -95,9 +97,17 @@ void main() {
 }
 
 Future<void> _pumpAppAt(WidgetTester tester, String location) async {
+  SharedPreferences.setMockInitialValues(<String, Object>{});
+  final preferences = await SharedPreferences.getInstance();
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        sharedPreferencesProvider.overrideWithValue(preferences),
+        authRepositoryProvider.overrideWith((ref) {
+          final auth = FakeAuthRepository();
+          ref.onDispose(auth.dispose);
+          return auth;
+        }),
         appRouterProvider.overrideWith((ref) {
           final router = createAppRouter(initialLocation: location);
           ref.onDispose(router.dispose);

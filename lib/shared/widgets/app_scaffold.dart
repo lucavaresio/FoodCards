@@ -9,6 +9,7 @@ class AppScaffold extends StatelessWidget {
     required this.onDestinationSelected,
     required this.body,
     this.coins,
+    this.actions = const [],
     super.key,
   });
 
@@ -17,6 +18,7 @@ class AppScaffold extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
   final Widget body;
   final int? coins;
+  final List<Widget> actions;
 
   static const _destinations = [
     NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
@@ -44,7 +46,7 @@ class AppScaffold extends StatelessWidget {
         : AppSpace.md;
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(title), actions: actions),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
