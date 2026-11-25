@@ -6,6 +6,7 @@ import 'theme/app_colors.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_text.dart';
 import 'theme/app_tokens.dart';
+import 'theme/theme_mode_provider.dart';
 import 'router/app_router.dart';
 
 class App extends ConsumerWidget {
@@ -18,7 +19,7 @@ class App extends ConsumerWidget {
       routerConfig: ref.watch(appRouterProvider),
       theme: lightTheme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.system,
+      themeMode: ref.watch(themeModeProvider),
       debugShowCheckedModeBanner: false,
     );
   }

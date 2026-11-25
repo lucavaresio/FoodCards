@@ -21,12 +21,20 @@ final currentUidProvider = Provider<String?>((ref) {
 });
 
 class PlayerCollectionState {
-  const PlayerCollectionState({required this.coins, required this.owned});
+  const PlayerCollectionState({
+    required this.coins,
+    required this.owned,
+    required this.dailyRewardClaimed,
+  });
 
-  const PlayerCollectionState.empty() : coins = 0, owned = const {};
+  const PlayerCollectionState.empty()
+    : coins = 0,
+      owned = const {},
+      dailyRewardClaimed = false;
 
   final int coins;
   final Map<String, int> owned;
+  final bool dailyRewardClaimed;
 
   int quantityOf(String cardId) => owned[cardId] ?? 0;
 }
@@ -88,6 +96,12 @@ class PlayerCollectionNotifier
     state = AsyncData(_snapshot(repository));
   }
 
+  Future<void> claimDailyReward(List<String> cardIds) async {
+    final repository = _requireRepository();
+    await repository.claimDailyReward(cardIds);
+    state = AsyncData(_snapshot(repository));
+  }
+
   Future<void> _load(String uid, CollectionRepository repository) async {
     try {
       await repository.initializeForNewUser();
@@ -108,7 +122,11 @@ class PlayerCollectionNotifier
   }
 
   PlayerCollectionState _snapshot(CollectionRepository repository) =>
-      PlayerCollectionState(coins: repository.coins, owned: repository.owned);
+      PlayerCollectionState(
+        coins: repository.coins,
+        owned: repository.owned,
+        dailyRewardClaimed: repository.hasClaimedDailyRewardToday,
+      );
 }
 
 final playerDecksProvider = FutureProvider.family<List<Deck>, String>((

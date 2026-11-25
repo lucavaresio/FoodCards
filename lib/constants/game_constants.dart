@@ -13,6 +13,7 @@ class GameConstants {
   static const int maxDeckNameLength = 20;
   // TODO: bilanciare
   static const int maxDecks = 10;
+  static const int dailyFreeCardCount = 3;
 
   static const List<CardPack> packs = <CardPack>[
     CardPack(
@@ -91,6 +92,22 @@ class GameConstants {
       image: 'legendary_feast.png',
     ),
   ];
+
+  static const CardPack dailyFreePack = CardPack(
+    id: 'daily-free',
+    name: 'Regalo giornaliero',
+    level: 'Gratis',
+    cardCount: dailyFreeCardCount,
+    cost: 0,
+    dropRates: <Rarity, double>{
+      Rarity.common: 60,
+      Rarity.uncommon: 25,
+      Rarity.rare: 12,
+      Rarity.epic: 2.5,
+      Rarity.legendary: 0.5,
+    },
+    image: 'snack_pack.png',
+  );
 
   static CardPack packById(String id) {
     for (final pack in packs) {

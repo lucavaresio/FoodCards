@@ -10,7 +10,7 @@
 | 9 · Crea il tuo deck | Fatta |
 | 10 · Motore di gioco | Fatta |
 | 11 · Gioco: lobby, partita, esito | Fatta |
-| 12 · Home, pacchetto gratuito, profilo e impostazioni | Da fare |
+| 12 · Home, pacchetto gratuito, profilo e impostazioni | Fatta |
 | 13 · Ricettario TheMealDB | Da fare |
 | 14 · Rifinitura e preparazione al rilascio | Da fare |
 
@@ -72,6 +72,27 @@
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
 - Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 12 · Home, pacchetto gratuito, profilo e impostazioni
+
+- Stato: fatta; analyzer pulito e tutti i 64 test passano.
+- File creati: `lib/features/home/daily_pack_controller.dart`,
+  `lib/theme/theme_mode_provider.dart`, `test/home_test.dart`,
+  `test/preferences_test.dart`.
+- File modificati: `lib/app.dart`,
+  `lib/constants/game_constants.dart`,
+  `lib/data/repositories/collection_repository.dart`,
+  `lib/data/repositories/auth_repository.dart`,
+  `lib/data/session_providers.dart`,
+  `lib/features/home/home_screen.dart`,
+  `lib/features/settings/settings_screen.dart`, `test/router_test.dart`.
+- Scelte: il regalo giornaliero assegna tre carte e viene ritirato una volta
+  al giorno UTC; data e carte sono persistite nella stessa scrittura atomica
+  della collezione. Il tema sistema/chiaro/scuro è salvato localmente; il
+  profilo permette di modificare il nome e uscire.
+- Valori provvisori: il regalo riusa le probabilità del pacchetto base; il
+  tema è una preferenza del dispositivo, non sincronizzata tra dispositivi.
 - Da fare a mano: nessuno per questa fase.
 
 ## Fase 11 · Gioco: lobby, partita, esito

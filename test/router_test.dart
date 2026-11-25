@@ -75,7 +75,7 @@ void main() {
 
     await tester.tap(find.text('Torna alla Home'));
     await tester.pumpAndSettle();
-    expect(find.text('In arrivo'), findsOneWidget);
+    expect(find.text('Accedi per continuare'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 

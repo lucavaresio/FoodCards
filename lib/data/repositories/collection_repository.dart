@@ -7,15 +7,22 @@ class CollectionRepository {
   final StorageService _storage;
   int _coins = 0;
   Map<String, int> _owned = <String, int>{};
+  String? _dailyRewardDate;
 
   int get coins => _coins;
   Map<String, int> get owned => Map<String, int>.unmodifiable(_owned);
+  bool get hasClaimedDailyRewardToday =>
+      hasClaimedDailyRewardAt(DateTime.now());
 
   int quantityOf(String cardId) => _owned[cardId] ?? 0;
   bool owns(String cardId) => quantityOf(cardId) > 0;
+  bool hasClaimedDailyRewardAt(DateTime date) =>
+      _dailyRewardDate == _dateKey(date);
 
   Future<void> load() async {
     final state = _storage.readJson('collection_state');
+    final dailyRewardDate = state?['dailyRewardDate'];
+    _dailyRewardDate = dailyRewardDate is String ? dailyRewardDate : null;
     final coins = state?['coins'] is int
         ? state!['coins'] as int
         : _storage.readInt('coins');
@@ -104,11 +111,44 @@ class CollectionRepository {
     }
   }
 
+  Future<void> claimDailyReward(List<String> cardIds, {DateTime? at}) async {
+    if (cardIds.isEmpty) {
+      throw ArgumentError.value(cardIds, 'cardIds', 'Il premio è vuoto');
+    }
+    final date = at ?? DateTime.now();
+    if (hasClaimedDailyRewardAt(date)) {
+      throw StateError('Il premio giornaliero è già stato ritirato');
+    }
+
+    final previousOwned = Map<String, int>.from(_owned);
+    final previousDate = _dailyRewardDate;
+    for (final cardId in cardIds) {
+      _owned[cardId] = (_owned[cardId] ?? 0) + 1;
+    }
+    _dailyRewardDate = _dateKey(date);
+
+    try {
+      await _persist();
+    } catch (_) {
+      _owned = previousOwned;
+      _dailyRewardDate = previousDate;
+      rethrow;
+    }
+  }
+
   Future<void> _persist() async {
     await _storage.writeJson('collection_state', {
       'coins': _coins,
       'owned': Map<String, dynamic>.from(_owned),
+      'dailyRewardDate': _dailyRewardDate,
     });
+  }
+
+  String _dateKey(DateTime date) {
+    final utc = date.toUtc();
+    final month = utc.month.toString().padLeft(2, '0');
+    final day = utc.day.toString().padLeft(2, '0');
+    return '${utc.year}-$month-$day';
   }
 }
 
