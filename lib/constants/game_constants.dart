@@ -7,6 +7,7 @@ class GameConstants {
   static const int deckSize = 10;
   static const int startingHandSize = 3;
   static const int matchSize = 10;
+  static const int battleMinimumDamage = 1;
   // TODO: bilanciare
   static const int startingCoins = 500;
   static const int maxDeckNameLength = 20;

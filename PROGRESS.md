@@ -8,7 +8,7 @@
 | 7 · Collezione | Fatta |
 | 8 · Shop e apertura pacchetti | Fatta |
 | 9 · Crea il tuo deck | Fatta |
-| 10 · Motore di gioco | Da fare |
+| 10 · Motore di gioco | Fatta |
 | 11 · Gioco: lobby, partita, esito | Da fare |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Da fare |
 | 13 · Ricettario TheMealDB | Da fare |
@@ -72,6 +72,23 @@
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
 - Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 10 · Motore di gioco
+
+- Stato: fatta; analyzer pulito e test deterministici del motore passati.
+- File creati: nessuno.
+- File modificati: `lib/constants/game_constants.dart`,
+  `lib/features/game/engine/battle_engine.dart`,
+  `lib/features/game/engine/bot_player.dart`,
+  `lib/features/game/engine/game_state.dart`, `test/battle_engine_test.dart`.
+- Scelte: lo scontro automatico usa una carta attiva per lato; attacca per
+  primo chi ha più velocità (parità al giocatore), infligge almeno 1 danno
+  (`attacco - difesa`) e interrompe il round al knockout. Il bot seleziona le
+  10 carte col totale statistiche più alto, con ID come spareggio.
+- Valori provvisori: le abilità restano descrittive perché il catalogo non
+  contiene effetti strutturati; le regole di danno e selezione del bot sono
+  baseline da bilanciare.
 - Da fare a mano: nessuno per questa fase.
 
 ## Fase 9 · Crea il tuo deck
