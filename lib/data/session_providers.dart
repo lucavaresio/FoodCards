@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models/app_user.dart';
 import 'models/deck.dart';
+import 'models/player_game_stats.dart';
 import 'providers.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/collection_repository.dart';
@@ -117,6 +118,23 @@ final playerDecksProvider = FutureProvider.family<List<Deck>, String>((
   final repository = ref.watch(deckRepositoryProvider(uid));
   await repository.load();
   return repository.decks;
+});
+
+final activePlayerDeckProvider = FutureProvider.family<Deck?, String>((
+  ref,
+  uid,
+) async {
+  await ref.watch(playerDecksProvider(uid).future);
+  final repository = ref.read(deckRepositoryProvider(uid));
+  final activeId = repository.activeDeckId;
+  return activeId == null ? null : repository.byId(activeId);
+});
+
+final playerGameStatsProvider = FutureProvider.family<PlayerGameStats, String>((
+  ref,
+  uid,
+) {
+  return ref.watch(gameStatsRepositoryProvider(uid)).load();
 });
 
 final coinsProvider = Provider<int?>((ref) {

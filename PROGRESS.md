@@ -9,7 +9,7 @@
 | 8 · Shop e apertura pacchetti | Fatta |
 | 9 · Crea il tuo deck | Fatta |
 | 10 · Motore di gioco | Fatta |
-| 11 · Gioco: lobby, partita, esito | Da fare |
+| 11 · Gioco: lobby, partita, esito | Fatta |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Da fare |
 | 13 · Ricettario TheMealDB | Da fare |
 | 14 · Rifinitura e preparazione al rilascio | Da fare |
@@ -72,6 +72,23 @@
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
 - Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 11 · Gioco: lobby, partita, esito
+
+- Stato: fatta; analyzer pulito e tutti i 60 test passano.
+- File creati: `lib/data/models/player_game_stats.dart`,
+  `lib/data/repositories/game_stats_repository.dart`, `test/game_test.dart`.
+- File modificati: `lib/data/providers.dart`,
+  `lib/data/session_providers.dart`,
+  `lib/features/game/game_controller.dart`,
+  `lib/features/game/game_screen.dart`,
+  `lib/features/game/match_screen.dart`.
+- Scelte: la lobby richiede un mazzo attivo completo; la partita mostra un
+  round alla volta e registra vittorie/sconfitte per UID. Le statistiche sono
+  salvate prima di accettare lo stato terminale, così un errore di persistenza
+  lascia il round riprovabile. Nessuna ricompensa monetaria è assegnata.
+- Valori provvisori: nessuno oltre alle regole base definite nella Fase 10.
 - Da fare a mano: nessuno per questa fase.
 
 ## Fase 10 · Motore di gioco
