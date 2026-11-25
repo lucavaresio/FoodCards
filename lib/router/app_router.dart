@@ -14,6 +14,7 @@ import '../features/game/game_screen.dart';
 import '../features/game/match_screen.dart';
 import '../features/gallery/gallery_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/recipes/recipe_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/shop/pack_opening_screen.dart';
 import '../features/shop/shop_screen.dart';
@@ -154,6 +155,11 @@ GoRouter createAppRouter({
         path: AppRoutes.settings,
         pageBuilder: (context, state) =>
             _transitionPage(context, state, const SettingsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.recipes,
+        pageBuilder: (context, state) =>
+            _transitionPage(context, state, const RecipeScreen()),
       ),
       GoRoute(
         path: AppRoutes.login,

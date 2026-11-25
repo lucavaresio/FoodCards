@@ -217,6 +217,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   label: 'Negozio',
                   onPressed: () => context.go(AppRoutes.shop),
                 ),
+                _HomeLink(
+                  label: 'Ricettario',
+                  onPressed: () => context.push(AppRoutes.recipes),
+                ),
               ],
             ),
           ],

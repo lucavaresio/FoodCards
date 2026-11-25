@@ -12,6 +12,7 @@ class AppRoutes {
   static const packOpening = '/shop/open';
   static const match = '/game/match';
   static const settings = '/settings';
+  static const recipes = '/recipes';
   static const login = '/login';
   static const register = '/register';
   static const forgotPassword = '/forgot-password';

@@ -50,6 +50,10 @@ class AppLayout {
   static const int collectionTabletColumns = 5;
   static const int packSummaryPhoneColumns = 3;
   static const int packSummaryTabletColumns = 5;
+  static const int recipePhoneColumns = 2;
+  static const int recipeTabletColumns = 3;
+  static const double recipeTileHeight = 280;
+  static const double recipeHeroHeight = 220;
 }
 
 class AppShadowOffset {

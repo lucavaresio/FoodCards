@@ -11,7 +11,7 @@
 | 10 · Motore di gioco | Fatta |
 | 11 · Gioco: lobby, partita, esito | Fatta |
 | 12 · Home, pacchetto gratuito, profilo e impostazioni | Fatta |
-| 13 · Ricettario TheMealDB | Da fare |
+| 13 · Ricettario TheMealDB | Fatta |
 | 14 · Rifinitura e preparazione al rilascio | Da fare |
 
 ## Fase 6 · Autenticazione e sessione
@@ -72,6 +72,29 @@
   contatore conta carte uniche e il reset degli strumenti debug rimuove le
   carte senza alterare le monete. Gli strumenti sono disponibili solo in debug.
 - Valori provvisori: nessuno aggiunto in questa fase.
+- Da fare a mano: nessuno per questa fase.
+
+## Fase 13 · Ricettario TheMealDB
+
+- Stato: fatta; analyzer pulito e tutti i 70 test passano. Verificati dal
+  vivo con risposta HTTP 200 `categories.php`, `filter.php`, `lookup.php` e
+  `random.php`.
+- File creati: `lib/data/models/meal.dart`,
+  `lib/data/remote/meal_db_client.dart`,
+  `lib/features/recipes/recipe_providers.dart`,
+  `lib/features/recipes/recipe_screen.dart`,
+  `test/meal_db_client_test.dart`, `test/recipe_screen_test.dart`.
+- File modificati: `pubspec.yaml`, `pubspec.lock`,
+  `lib/features/home/home_screen.dart`, `lib/router/app_router.dart`,
+  `lib/router/app_routes.dart`, `lib/theme/app_tokens.dart`,
+  `test/router_test.dart`.
+- Scelte: categorie e ricette sono caricate in rete, con ricerca per
+  categoria, dettaglio ingredienti/preparazione e ricetta casuale. Errori,
+  timeout, risposte vuote e retry sono gestiti esplicitamente; immagini e
+  contenuti attribuiti a TheMealDB.
+- Valori provvisori: API key `1` del percorso pubblico TheMealDB; verificare
+  i termini e configurare una chiave commerciale prima di eventuale rilascio
+  commerciale.
 - Da fare a mano: nessuno per questa fase.
 
 ## Fase 12 · Home, pacchetto gratuito, profilo e impostazioni

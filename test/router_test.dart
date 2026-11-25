@@ -1,13 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:food_cards/app.dart';
 import 'package:food_cards/data/providers.dart';
+import 'package:food_cards/data/remote/meal_db_client.dart';
 import 'package:food_cards/data/repositories/fake_auth_repository.dart';
 import 'package:food_cards/data/session_providers.dart';
+import 'package:food_cards/features/recipes/recipe_providers.dart';
 import 'package:food_cards/router/app_router.dart';
 import 'package:food_cards/router/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 void main() {
   testWidgets('ogni rotta viene costruita', (tester) async {
@@ -21,6 +27,7 @@ void main() {
       AppRoutes.packOpening,
       AppRoutes.match,
       AppRoutes.settings,
+      AppRoutes.recipes,
       AppRoutes.login,
       AppRoutes.register,
       AppRoutes.forgotPassword,
@@ -60,7 +67,11 @@ void main() {
   testWidgets('sottorotte a schermo intero non mostrano la barra', (
     tester,
   ) async {
-    for (final location in [AppRoutes.match, AppRoutes.settings]) {
+    for (final location in [
+      AppRoutes.match,
+      AppRoutes.settings,
+      AppRoutes.recipes,
+    ]) {
       await _pumpAppAt(tester, location);
       await tester.pumpAndSettle();
       expect(find.byType(NavigationBar), findsNothing, reason: location);
@@ -104,6 +115,15 @@ Future<void> _pumpAppAt(WidgetTester tester, String location) async {
           final auth = FakeAuthRepository();
           ref.onDispose(auth.dispose);
           return auth;
+        }),
+        mealDbClientProvider.overrideWith((ref) {
+          final client = MealDbClient(
+            client: MockClient(
+              (_) async => http.Response(jsonEncode({'categories': []}), 200),
+            ),
+          );
+          ref.onDispose(client.close);
+          return client;
         }),
         appRouterProvider.overrideWith((ref) {
           final router = createAppRouter(initialLocation: location);
